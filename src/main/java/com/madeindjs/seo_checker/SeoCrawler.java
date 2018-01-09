@@ -6,6 +6,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jsoup.Jsoup;
@@ -14,7 +15,7 @@ import org.jsoup.Jsoup;
  * A Crawler who fetch website & check some SEO point
  *
  *
- * - use sitemap file
+ * - use sitemap file;
  *
  * - each page are reachable
  *
@@ -52,10 +53,10 @@ public class SeoCrawler extends WebCrawler {
         try {
             ScrapedPage scrapedPage = new ScrapedPage(page);
             scrapedPage.save(database.getConnection());
-        } catch (RuntimeException e) {
+        } catch (ParseException e) {
             // do nothing
         } catch (SQLException ex) {
-            Logger.getLogger(SeoCrawler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SeoCrawler.class.getName()).log(Level.SEVERE, "SQLException", ex);
         }
     }
 

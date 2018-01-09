@@ -1,3 +1,4 @@
 /target/
 /crawl_data/crawler.sqlite
 crawl_data
+crawler.sqlite
