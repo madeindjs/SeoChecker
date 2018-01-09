@@ -15,6 +15,7 @@ public class Database {
 
             Class.forName("org.sqlite.JDBC");
             stmt.executeUpdate(ScrapedPage.SCHEMA);
+            stmt.executeUpdate(ImageWithoutAlt.SCHEMA);
         } catch (ClassNotFoundException e) {
             System.err.println("'org.sqlite.JDBC' was not found");
         } catch (SQLException e) {
