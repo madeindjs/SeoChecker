@@ -1,5 +1,7 @@
 package com.madeindjs.seo_checker;
 
+import com.madeindjs.seo_checker.model.ScrapedPage;
+import com.madeindjs.seo_checker.model.Database;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.url.WebURL;
@@ -38,7 +40,7 @@ public class SeoCrawler extends WebCrawler {
     /**
      * Database where page will be saved
      */
-    public static Database database = new Database();
+    public static Database database = Database.getInstance();
 
     @Override
     public boolean shouldVisit(Page referringPage, WebURL url) {
@@ -52,7 +54,7 @@ public class SeoCrawler extends WebCrawler {
     public void visit(Page page) {
         try {
             ScrapedPage scrapedPage = new ScrapedPage(page);
-            scrapedPage.save(database.getConnection());
+            scrapedPage.save();
         } catch (ParseException e) {
             // do nothing
         } catch (SQLException ex) {

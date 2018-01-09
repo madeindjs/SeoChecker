@@ -1,5 +1,6 @@
-package com.madeindjs.seo_checker;
+package com.madeindjs.seo_checker.model;
 
+import com.madeindjs.seo_checker.model.Database;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import java.sql.Connection;
@@ -9,6 +10,8 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -106,10 +109,11 @@ public class ScrapedPage {
      * @return
      * @throws SQLException when SQL error
      */
-    public boolean save(Connection connection) throws SQLException {
+    public boolean save() throws SQLException {
         String sql = "INSERT INTO pages(url, h1, title, description, keywords, status) VALUES(?, ?, ?, ?, ?, ?)";
+        Database database = Database.getInstance();
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = database.prepareStatement(sql)) {
             stmt.setString(1, url);
             stmt.setString(2, h1);
             stmt.setString(3, title);
@@ -128,8 +132,15 @@ public class ScrapedPage {
             throw ex;
         }
 
+        setIdFromSql();
+
+        return saveImages();
+    }
+
+    private void setIdFromSql() {
+        Database database = Database.getInstance();
         // here row was inserted, now we fetch id
-        try (PreparedStatement stmt = connection.prepareStatement("SELECT id FROM pages WHERE url = ? LIMIT 1")) {
+        try (PreparedStatement stmt = database.prepareStatement("SELECT id FROM pages WHERE url = ? LIMIT 1")) {
             stmt.setString(1, url);
             ResultSet result = stmt.executeQuery();
             result.next();
@@ -137,15 +148,17 @@ public class ScrapedPage {
             id = result.getInt(1);
             stmt.close();
         } catch (SQLException ex) {
-            throw ex;
         }
-
-        // now we insert imagesWithoutAlt
-        for (ImageWithoutAlt image : imagesWithoutAlt) {
-            image.save(connection, id);
-        }
-
-        return true;
     }
 
+    private boolean saveImages() {
+        try {
+            for (ImageWithoutAlt image : imagesWithoutAlt) {
+                image.save(id);
+            }
+            return true;
+        } catch (SQLException ex) {
+            return false;
+        }
+    }
 }

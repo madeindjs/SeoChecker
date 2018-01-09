@@ -1,5 +1,6 @@
-package com.madeindjs.seo_checker;
+package com.madeindjs.seo_checker.model;
 
+import com.madeindjs.seo_checker.model.Database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -22,9 +23,10 @@ public class ImageWithoutAlt {
         html = element.toString();
     }
 
-    public boolean save(Connection connection, int pageId) throws SQLException {
+    public boolean save(int pageId) throws SQLException {
+        Database database = Database.getInstance();
         String sql = "INSERT INTO images_without_alt(page_id, html) VALUES(?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = database.prepareStatement(sql)) {
             stmt.setInt(1, pageId);
             stmt.setString(2, html);
 
