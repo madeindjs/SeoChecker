@@ -6,9 +6,9 @@ import edu.uci.ics.crawler4j.url.WebURL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jsoup.Jsoup;
 
 /**
  * A Crawler who fetch website & check some SEO point
@@ -43,23 +43,20 @@ public class SeoCrawler extends WebCrawler {
     public boolean shouldVisit(Page referringPage, WebURL url) {
         String href = url.getURL().toLowerCase();
 
+        // TODO: limit for html page
         return href.startsWith("http://localhost:4000");
     }
 
     @Override
     public void visit(Page page) {
         try {
-            Connection connection = database.getConnection();
-            PreparedStatement stmt = connection.prepareStatement("INSERT INTO pages(url) VALUES( ? )");
-            stmt.setString(1, page.getWebURL().getURL());
-
-            stmt.executeUpdate();
-            stmt.close();
-            connection.close();
+            ScrapedPage scrapedPage = new ScrapedPage(page);
+            scrapedPage.save(database.getConnection());
+        } catch (RuntimeException e) {
+            // do nothing
         } catch (SQLException ex) {
             Logger.getLogger(SeoCrawler.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println(String.format("Page %s", page.getWebURL()));
     }
 
 }

@@ -1,2 +1,3 @@
 /target/
-/crawl_data/
+/crawl_data/crawler.sqlite
+crawl_data
