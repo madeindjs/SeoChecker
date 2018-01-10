@@ -1,4 +1,4 @@
-package com.madeindjs.seo_checker.model;
+package com.madeindjs.seo_checker.models;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -48,7 +48,7 @@ public class Database {
         return connection.prepareStatement(sql);
     }
 
-    private void reset() {
+    public void reset() {
         Statement stmt;
         try {
             stmt = connection.createStatement();

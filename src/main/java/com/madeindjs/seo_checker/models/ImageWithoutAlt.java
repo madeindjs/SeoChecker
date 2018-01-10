@@ -1,6 +1,6 @@
-package com.madeindjs.seo_checker.model;
+package com.madeindjs.seo_checker.models;
 
-import com.madeindjs.seo_checker.model.Database;
+import com.madeindjs.seo_checker.models.Database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

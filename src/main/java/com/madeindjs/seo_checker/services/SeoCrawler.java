@@ -1,17 +1,14 @@
-package com.madeindjs.seo_checker;
+package com.madeindjs.seo_checker.services;
 
-import com.madeindjs.seo_checker.model.ScrapedPage;
-import com.madeindjs.seo_checker.model.Database;
+import com.madeindjs.seo_checker.models.ScrapedPage;
+import com.madeindjs.seo_checker.models.Database;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.url.WebURL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jsoup.Jsoup;
 
 /**
  * A Crawler who fetch website & check some SEO point

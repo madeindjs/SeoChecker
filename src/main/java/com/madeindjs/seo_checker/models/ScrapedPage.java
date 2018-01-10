@@ -1,17 +1,12 @@
-package com.madeindjs.seo_checker.model;
+package com.madeindjs.seo_checker.models;
 
-import com.madeindjs.seo_checker.model.Database;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -59,6 +54,30 @@ public class ScrapedPage {
      * List of images without alt attributes foundeds on this page
      */
     private Vector<ImageWithoutAlt> imagesWithoutAlt = new Vector();
+
+    public static ScrapedPage get(int id) throws SQLException {
+        Database database = Database.getInstance();
+        // here row was inserted, now we fetch id
+        PreparedStatement stmt = database.prepareStatement("SELECT * FROM pages WHERE id = ? LIMIT 1");
+        stmt.setInt(1, id);
+        ResultSet result = stmt.executeQuery();
+        result.next();
+        stmt.close();
+
+        return new ScrapedPage(result);
+    }
+
+    private ScrapedPage(ResultSet result) throws SQLException {
+        id = result.getInt("id");
+        status = result.getInt("status");
+        url = result.getString("url");
+        h1 = result.getString("h1");
+        title = result.getString("title");
+        description = result.getString("description");
+        keywords = result.getString("keywords");
+
+        // todo: load list
+    }
 
     public ScrapedPage(Page page) throws ParseException {
         url = page.getWebURL().getURL();

@@ -1,5 +1,7 @@
 package com.madeindjs.seo_checker;
 
+import com.madeindjs.seo_checker.services.SeoCrawler;
+import com.madeindjs.seo_checker.views.Console;
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
@@ -13,10 +15,12 @@ public class Main {
     private static final String URL = "http://localhost:4000";
 
     public static void main(String[] args) throws Exception {
+
         String crawlStorageFolder = STORAGE_FOLDER;
         // configure crawler
         CrawlConfig config = new CrawlConfig();
         config.setCrawlStorageFolder(crawlStorageFolder);
+        config.setThreadShutdownDelaySeconds(1);
         PageFetcher pageFetcher = new PageFetcher(config);
         RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
         RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
@@ -25,6 +29,8 @@ public class Main {
 
         controller.addSeed(URL);
         controller.start(SeoCrawler.class, NUMBER_OF_THREAD);
+
+        new Console();
     }
 
 }
