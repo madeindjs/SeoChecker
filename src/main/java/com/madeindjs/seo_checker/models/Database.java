@@ -48,6 +48,9 @@ public class Database {
         return connection.prepareStatement(sql);
     }
 
+    /**
+     * Reset Database
+     */
     public void reset() {
         Statement stmt;
         try {
