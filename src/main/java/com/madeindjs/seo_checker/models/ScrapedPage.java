@@ -55,6 +55,7 @@ public class ScrapedPage {
      */
     private Vector<ImageWithoutAlt> imagesWithoutAlt = new Vector();
 
+    /*
     public static ScrapedPage get(int id) throws SQLException {
         Database database = Database.getInstance();
         // here row was inserted, now we fetch id
@@ -78,7 +79,7 @@ public class ScrapedPage {
 
         // todo: load list
     }
-
+     */
     public ScrapedPage(Page page) throws ParseException {
         url = page.getWebURL().getURL();
         status = page.getStatusCode();
