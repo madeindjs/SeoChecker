@@ -14,7 +14,7 @@ public class BrokenPages {
 
     public static final int DESCRIPTION_MIN = 230;
     public static final int DESCRIPTION_MAX = 320;
-    public static final int TITLE_MAX = 320;
+    public static final int TITLE_MAX = 71;
 
     private Vector<BrokenPage> brokenPages = new Vector();
 
@@ -73,7 +73,7 @@ public class BrokenPages {
             int length = title.length();
             // check if length is optimized
             if (length > TITLE_MAX) {
-                getBrokenPage(url).addError(BrokenPageError.TITLE_TOO_SHORT);
+                getBrokenPage(url).addError(BrokenPageError.TITLE_TOO_LONG);
             }
         }
     }
