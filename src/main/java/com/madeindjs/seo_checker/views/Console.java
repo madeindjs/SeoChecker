@@ -12,11 +12,18 @@ import java.util.logging.Logger;
  */
 public class Console {
 
+    public static final int DESCRIPTION_MIN = 230;
+    public static final int DESCRIPTION_MAX = 320;
+    public static final int TITLE_MAX = 320;
+
     public Console() throws SQLException {
         for (String column : new String[]{"h1", "title", "description"}) {
             displayEmptyColumn(column);
             displayDuplicatesColumn(column);
         }
+
+        displayNotOptimizedTitle();
+        displayNotOptimizedDescription();
     }
 
     /**
@@ -39,26 +46,80 @@ public class Console {
     }
 
     public void displayEmptyColumn(String column) throws SQLException {
-        String sql = String.format("SELECT url FROM pages WHERE %s IS NULL", column);
+        System.out.println(column + " is no set");
+
+        String sql = String.format(
+                "SELECT url FROM pages WHERE %1$s IS NULL OR %1$s = ''", column);
         ResultSet result = Database.getInstance()
                 .prepareStatement(sql)
                 .executeQuery();
         while (result.next()) {
-            String output = String.format("%s : %s not set", result.getString("url"), column);
-            System.out.println(output);
+            printUrl(result);
         }
     }
 
     public void displayDuplicatesColumn(String column) throws SQLException {
+        System.out.println(column + " is duplicate");
+
         ResultSet result = selectDuplicateForColumn(column);
         while (result.next()) {
-            String output = String.format(
-                    "%s : %s \"%s\" duplicates",
-                    result.getString("url"),
-                    column,
-                    result.getString(column)
-            );
-            System.out.println(output);
+            printUrl(result);
+        }
+    }
+
+    /**
+     * Title have to be shorter than 71 char
+     *
+     * @see https://moz.com/blog/googles-longer-snippets
+     */
+    public void displayNotOptimizedTitle() throws SQLException {
+        ResultSet result = Database.getInstance().prepareStatement(
+                "SELECT title, url FROM pages"
+        ).executeQuery();
+
+        System.out.println(String.format(
+                "Title have to be shorter than %s char", TITLE_MAX
+        ));
+
+        while (result.next()) {
+            String description = result.getString("title");
+            int length = description.length();
+            // check if length is optimized
+            if (length > TITLE_MAX) {
+                printUrl(result);
+            }
+        }
+    }
+
+    /**
+     * Description have to be between 230 & 320 char
+     *
+     * @see https://moz.com/blog/googles-longer-snippets
+     */
+    public void displayNotOptimizedDescription() throws SQLException {
+        ResultSet result = Database.getInstance().prepareStatement(
+                "SELECT description, url FROM pages"
+        ).executeQuery();
+
+        System.out.println(String.format(
+                "Description not optimized Description have to be between %s & %s char",
+                DESCRIPTION_MIN, DESCRIPTION_MAX
+        ));
+
+        while (result.next()) {
+            String description = result.getString("description");
+            int length = description.length();
+            // check if length is optimized
+            if (length < DESCRIPTION_MIN || length > DESCRIPTION_MAX) {
+                printUrl(result);
+            }
+        }
+    }
+
+    private void printUrl(ResultSet result) {
+        try {
+            System.out.println("\t- " + result.getString("url"));
+        } catch (SQLException ex) {
         }
     }
 }

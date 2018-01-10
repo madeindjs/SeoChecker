@@ -8,6 +8,7 @@ Currently this check:
     - has **unique**
         - title
         - meta description
+    - has [optimized meta description](https://moz.com/blog/googles-longer-snippets)
 
 
 ## Run
