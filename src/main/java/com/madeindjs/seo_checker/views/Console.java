@@ -12,21 +12,11 @@ import java.util.logging.Logger;
  */
 public class Console {
 
-    public Console() {
-        try {
-            ResultSet result = selectDuplicateForColumn("h1");
-            while (result.next()) {
-                String output = String.format(
-                        "H1 \"%s\" is duplicates on \"%s\"",
-                        result.getString("h1"),
-                        result.getString("url")
-                );
-                System.out.println(output);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Console.class.getName()).log(Level.SEVERE, null, ex);
+    public Console() throws SQLException {
+        for (String column : new String[]{"h1", "title", "description"}) {
+            displayEmptyColumn(column);
+            displayDuplicatesColumn(column);
         }
-
     }
 
     /**
@@ -38,16 +28,37 @@ public class Console {
      */
     private ResultSet selectDuplicateForColumn(String column) throws SQLException {
         String sql = String.format(
-                "SELECT count(*) AS count, %s, url FROM pages GROUP BY %s HAVING count > 1",
-                column, column
+                "SELECT count(*) AS count, %1$s, url "
+                + "FROM pages WHERE %1$s IS NOT NULL "
+                + "GROUP BY %1$s HAVING count > 1",
+                column
         );
         PreparedStatement stmt = Database.getInstance().prepareStatement(sql);
 
         return stmt.executeQuery();
     }
 
-    public void display() {
-
+    public void displayEmptyColumn(String column) throws SQLException {
+        String sql = String.format("SELECT url FROM pages WHERE %s IS NULL", column);
+        ResultSet result = Database.getInstance()
+                .prepareStatement(sql)
+                .executeQuery();
+        while (result.next()) {
+            String output = String.format("%s : %s not set", result.getString("url"), column);
+            System.out.println(output);
+        }
     }
 
+    public void displayDuplicatesColumn(String column) throws SQLException {
+        ResultSet result = selectDuplicateForColumn(column);
+        while (result.next()) {
+            String output = String.format(
+                    "%s : %s \"%s\" duplicates",
+                    result.getString("url"),
+                    column,
+                    result.getString(column)
+            );
+            System.out.println(output);
+        }
+    }
 }

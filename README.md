@@ -1,6 +1,13 @@
 # SeoChecker
 
-Crawl your website using [Crawler4j][crwaler4j] & check somes SEO rules.
+Crawl your website using [Crawler4j][crwaler4j] & check somes SEO rules. 
+
+Currently this check:
+
+- Pages
+    - has **unique**
+        - title
+        - meta description
 
 
 ## Run
@@ -28,9 +35,6 @@ Check all of these SEO rules:
     - use sitemap file
 - Pages
     - are reachable
-    - has **unique**
-        - title
-        - meta description
     - has keywords
     - all `<img>` have `alt` attribute
     - Response time
