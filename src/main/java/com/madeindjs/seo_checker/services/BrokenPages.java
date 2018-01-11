@@ -98,6 +98,17 @@ public class BrokenPages {
         }
     }
 
+    private void loadAssetsNotFound() throws SQLException {
+        ResultSet result = Database.getInstance()
+                .prepareStatement("SELECT url FROM assets WHERE status != 200")
+                .executeQuery();
+        // insert broken pages
+        while (result.next()) {
+            String url = result.getString("url");
+            getBrokenPage(url).addError(BrokenPageError.UNREACHABLE);
+        }
+    }
+
     /**
      * Create a statement to find duplicate records for a given column
      *
@@ -154,4 +165,5 @@ public class BrokenPages {
 
         return page;
     }
+
 }

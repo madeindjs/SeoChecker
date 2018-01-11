@@ -1,6 +1,7 @@
 package com.madeindjs.seo_checker.services;
 
 import com.madeindjs.seo_checker.models.Database;
+import com.madeindjs.seo_checker.models.ScrapedError;
 import com.madeindjs.seo_checker.models.ScrapedPage;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
@@ -9,6 +10,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  * A Crawler who fetch website & check some SEO point
@@ -34,6 +36,8 @@ import java.util.logging.Logger;
  */
 public class SeoCrawler extends WebCrawler {
 
+    private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg|png|mp3|mp4|zip|gz))$");
+
     /**
      * Database where page will be saved
      */
@@ -46,11 +50,26 @@ public class SeoCrawler extends WebCrawler {
         String href = url.getURL().toLowerCase();
 
         // TODO: limit for html page
-        return href.startsWith(startUrl);
+        return href.startsWith(startUrl) || FILTERS.matcher(href).matches();
     }
 
     @Override
     public void visit(Page page) {
+        insertInDatabase(page);
+    }
+
+    @Override
+    protected void onUnexpectedStatusCode(String urlStr, int statusCode, String contentType, String description) {
+        super.onUnexpectedStatusCode(urlStr, statusCode, contentType, description);
+        ScrapedError asset = new ScrapedError(urlStr, statusCode);
+        try {
+            asset.save();
+        } catch (SQLException ex) {
+            Logger.getLogger(SeoCrawler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    protected void insertInDatabase(Page page) {
         try {
             ScrapedPage scrapedPage = new ScrapedPage(page);
             scrapedPage.save();

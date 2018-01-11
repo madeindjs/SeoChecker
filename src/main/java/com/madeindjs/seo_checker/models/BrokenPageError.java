@@ -18,7 +18,9 @@ public enum BrokenPageError {
     // duplicates
     TITLE_DUPLICATE("<title> is duplicate on another page", 1),
     H1_DUPLICATE("<h1> is duplicate on another page", 1),
-    DESCRIPTION_DUPLICATE("<meta name=\"description\"> is duplicate on another page", 1);
+    DESCRIPTION_DUPLICATE("<meta name=\"description\"> is duplicate on another page", 1),
+    // not found
+    UNREACHABLE("Asset was not found", 1);
 
     private static final String RED = "\033[31;1m";
     private static final String YELLOW = "\033[33m";

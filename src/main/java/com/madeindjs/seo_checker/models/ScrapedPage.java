@@ -125,7 +125,6 @@ public class ScrapedPage {
     /**
      * Insert `ScrapedPage` & related `imagesWithoutAlt` in database
      *
-     * @param connection
      * @return
      * @throws SQLException when SQL error
      */

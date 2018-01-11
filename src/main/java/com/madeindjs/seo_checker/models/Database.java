@@ -59,6 +59,7 @@ public class Database {
         try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate(ScrapedPage.SCHEMA);
             stmt.executeUpdate(ImageWithoutAlt.SCHEMA);
+            stmt.executeUpdate(ScrapedError.SCHEMA);
         } catch (SQLException ex) {
             System.out.println("Can't reset database");
             System.exit(1);

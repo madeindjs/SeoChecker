@@ -12,6 +12,9 @@ import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SeoCrawlController extends CrawlController {
 
@@ -44,7 +47,11 @@ public class SeoCrawlController extends CrawlController {
     }
 
     public void start() {
-        Database.getInstance().reset();
+        try {
+            Database.getInstance().reset();
+        } catch (SQLException ex) {
+            Logger.getLogger(SeoCrawlController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         start(SeoCrawler.class, NUMBER_OF_THREAD);
     }
 

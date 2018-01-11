@@ -56,4 +56,12 @@ public abstract class ModelTest extends TestCase {
         return result.getInt(1);
     }
 
+    protected int countScrapedAsset() throws SQLException {
+        PreparedStatement stmt = Database.getInstance()
+                .prepareStatement("SELECT COUNT(*) FROM assets");
+        ResultSet result = stmt.executeQuery();
+
+        return result.getInt(1);
+    }
+
 }
