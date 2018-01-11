@@ -141,7 +141,7 @@ public class BrokenPages {
      * @param url
      * @return
      */
-    private BrokenPage getBrokenPage(String url) {
+    public BrokenPage getBrokenPage(String url) {
         // search if page already added
         for (BrokenPage page : brokenPages) {
             if (page.getUrl().equals(url)) {

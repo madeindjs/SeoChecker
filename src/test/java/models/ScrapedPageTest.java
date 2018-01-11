@@ -1,15 +1,9 @@
 package models;
 
-import com.madeindjs.seo_checker.models.Database;
 import com.madeindjs.seo_checker.models.ScrapedPage;
 import edu.uci.ics.crawler4j.crawler.Page;
-import edu.uci.ics.crawler4j.parser.HtmlParseData;
-import edu.uci.ics.crawler4j.url.WebURL;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.HashSet;
 
 public class ScrapedPageTest extends ModelTest {
 
@@ -28,30 +22,6 @@ public class ScrapedPageTest extends ModelTest {
         scrapedPage.save();
 
         assertEquals(1, countScrapedPage());
-    }
-
-    private Page getPage() {
-        return getPage("<html><html>");
-    }
-
-    private Page getPage(String html) {
-        WebURL url = new WebURL();
-        url.setURL("http://example.com");
-        Page page = new Page(url);
-        HtmlParseData data = new HtmlParseData();
-        data.setHtml(html);
-        data.setOutgoingUrls(new HashSet());
-        page.setParseData(data);
-
-        return page;
-    }
-
-    private int countScrapedPage() throws SQLException {
-        PreparedStatement stmt = Database.getInstance()
-                .prepareStatement("SELECT COUNT(*) FROM pages");
-        ResultSet result = stmt.executeQuery();
-
-        return result.getInt(1);
     }
 
 }

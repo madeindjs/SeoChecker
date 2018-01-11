@@ -23,6 +23,10 @@ public class BrokenPage {
         return errors;
     }
 
+    public boolean haveError(BrokenPageError error) {
+        return errors.contains(error);
+    }
+
     public void addError(BrokenPageError error) {
         errors.add(error);
     }
