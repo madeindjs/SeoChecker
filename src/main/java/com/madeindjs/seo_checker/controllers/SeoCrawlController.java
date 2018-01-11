@@ -23,12 +23,8 @@ public class SeoCrawlController extends CrawlController {
      * Number of crawler at the same times
      */
     private static final int NUMBER_OF_THREAD = 4;
-    /**
-     * Url to scrawl
-     */
-    private static final String URL = "http://localhost:4000";
 
-    public static SeoCrawlController create() throws Exception {
+    public static SeoCrawlController create(String url) throws Exception {
         // configure crawler
         CrawlConfig config = new CrawlConfig();
         config.setCrawlStorageFolder(STORAGE_FOLDER);
@@ -38,7 +34,7 @@ public class SeoCrawlController extends CrawlController {
         RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
         // create controller
         SeoCrawlController controller = new SeoCrawlController(config, pageFetcher, robotstxtServer);
-        controller.addSeed(URL);
+        controller.addSeed(url);
 
         return controller;
     }
@@ -50,6 +46,11 @@ public class SeoCrawlController extends CrawlController {
     public void start() {
         Database.getInstance().reset();
         start(SeoCrawler.class, NUMBER_OF_THREAD);
+    }
+
+    public void addSeed(String url) {
+        super.addSeed(url);
+        SeoCrawler.startUrl = url;
     }
 
 }

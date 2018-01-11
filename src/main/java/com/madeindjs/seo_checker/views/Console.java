@@ -19,11 +19,13 @@ public class Console {
     }
 
     private void display(BrokenPage page) {
-        System.out.println(page.getUrl());
+        System.out.println("\033[1m" + page.getUrl() + "\033[0m");
 
         for (BrokenPageError error : page.getErrors()) {
             System.out.println("\t- " + error);
         }
+
+        System.out.println("");
     }
 
 }

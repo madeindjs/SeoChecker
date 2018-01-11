@@ -1,7 +1,7 @@
 package com.madeindjs.seo_checker.services;
 
-import com.madeindjs.seo_checker.models.ScrapedPage;
 import com.madeindjs.seo_checker.models.Database;
+import com.madeindjs.seo_checker.models.ScrapedPage;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.url.WebURL;
@@ -39,12 +39,14 @@ public class SeoCrawler extends WebCrawler {
      */
     public static Database database = Database.getInstance();
 
+    public static String startUrl = "";
+
     @Override
     public boolean shouldVisit(Page referringPage, WebURL url) {
         String href = url.getURL().toLowerCase();
 
         // TODO: limit for html page
-        return href.startsWith("http://localhost:4000");
+        return href.startsWith(startUrl);
     }
 
     @Override
