@@ -10,25 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.HashSet;
-import junit.framework.TestCase;
 
-/**
- *
- * @author apprenant
- */
-public class ScrapedPageTest extends TestCase {
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        Database.getInstance().reset();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Database.getInstance().closeConnection();
-    }
+public class ScrapedPageTest extends ModelTest {
 
     /**
      * Just assert that `getPage` not throw exception
