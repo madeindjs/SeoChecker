@@ -33,7 +33,7 @@ public class Database {
     private Database() {
         try {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection(String.format("jdbc:sqlite:%s", DATABASE_NAME));
+            openConnection();
         } catch (ClassNotFoundException ex) {
             System.out.println("Can't find org.sqlite.JDBC");
             System.exit(1);
@@ -44,21 +44,36 @@ public class Database {
     }
 
     public PreparedStatement prepareStatement(String sql) throws SQLException {
+        openConnection();
+
         return connection.prepareStatement(sql);
     }
 
     /**
      * Reset Database
      */
-    public void reset() {
-        Statement stmt;
-        try {
-            stmt = connection.createStatement();
+    public void reset() throws SQLException {
+        closeConnection();
+        openConnection();
+
+        try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate(ScrapedPage.SCHEMA);
             stmt.executeUpdate(ImageWithoutAlt.SCHEMA);
         } catch (SQLException ex) {
             System.out.println("Can't reset database");
             System.exit(1);
+        }
+    }
+
+    private void openConnection() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            connection = DriverManager.getConnection(String.format("jdbc:sqlite:%s", DATABASE_NAME));
+        }
+    }
+
+    public void closeConnection() throws SQLException {
+        if (!connection.isClosed()) {
+            connection.close();
         }
     }
 
