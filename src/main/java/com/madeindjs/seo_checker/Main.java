@@ -14,7 +14,6 @@ public class Main {
 
         SeoCrawlController crawler = SeoCrawlController.create(url);
         crawler.start();
-
         new Console();
     }
 

@@ -8,6 +8,8 @@ Currently this check:
     - has **unique**
         - title
         - meta descriptionoptimized meta description
+    - has keywords
+    - all `<img>` have `alt` attribute
     - has optimized title (under 71 chars)
     - has optimized meta description [(between 230 & 320 chars)](https://moz.com/blog/googles-longer-snippets)
 
@@ -48,8 +50,7 @@ Check all of these SEO rules:
     - use sitemap file
 - Pages
     - are reachable
-    - has keywords
-    - all `<img>` have `alt` attribute
+    
     - Response time
         - good: under 400 ms
         - not bad: between 400 ms & 800 ms

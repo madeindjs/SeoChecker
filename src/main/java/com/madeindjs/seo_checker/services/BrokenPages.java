@@ -27,6 +27,7 @@ public class BrokenPages {
         loadEmpty("title", BrokenPageError.TITLE_EMPTY);
         loadEmpty("description", BrokenPageError.DESCRIPTION_EMPTY);
         loadEmpty("keywords", BrokenPageError.KEYWORDS_EMPTY);
+        loadImgAltMissing();
 
         // duplicates
         loadDuplicates("h1", BrokenPageError.H1_DUPLICATE);
@@ -118,6 +119,19 @@ public class BrokenPages {
         while (result.next()) {
             String url = result.getString("url");
             getBrokenPage(url).addError(error);
+        }
+    }
+
+    private void loadImgAltMissing() throws SQLException {
+        String sql = String.format(
+                "SELECT p.url FROM images_without_alt i INNER JOIN pages p ON i.page_id = p.id");
+        ResultSet result = Database.getInstance()
+                .prepareStatement(sql)
+                .executeQuery();
+        // insert broken pages
+        while (result.next()) {
+            String url = result.getString("url");
+            getBrokenPage(url).addError(BrokenPageError.IMG_ALT_EMPTY);
         }
     }
 
