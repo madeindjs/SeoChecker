@@ -52,12 +52,15 @@ public class BrokenPages {
         while (result.next()) {
             String url = result.getString("url");
             String description = result.getString("description");
-            int length = description.length();
-            // check if length is optimized
-            if (length < DESCRIPTION_MIN) {
-                getBrokenPage(url).addError(BrokenPageError.DESCRIPTION_TOO_SHORT);
-            } else if (length > DESCRIPTION_MAX) {
-                getBrokenPage(url).addError(BrokenPageError.DESCRIPTION_TOO_LONG);
+
+            if (description != null) {
+                int length = description.length();
+                // check if length is optimized
+                if (length < DESCRIPTION_MIN) {
+                    getBrokenPage(url).addError(BrokenPageError.DESCRIPTION_TOO_SHORT);
+                } else if (length > DESCRIPTION_MAX) {
+                    getBrokenPage(url).addError(BrokenPageError.DESCRIPTION_TOO_LONG);
+                }
             }
         }
     }
@@ -70,10 +73,13 @@ public class BrokenPages {
         while (result.next()) {
             String url = result.getString("url");
             String title = result.getString("title");
-            int length = title.length();
-            // check if length is optimized
-            if (length > TITLE_MAX) {
-                getBrokenPage(url).addError(BrokenPageError.TITLE_TOO_LONG);
+
+            if (title != null) {
+                int length = title.length();
+                // check if length is optimized
+                if (length > TITLE_MAX) {
+                    getBrokenPage(url).addError(BrokenPageError.TITLE_TOO_LONG);
+                }
             }
         }
     }
