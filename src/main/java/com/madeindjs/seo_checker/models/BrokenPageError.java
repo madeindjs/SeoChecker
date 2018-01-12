@@ -3,6 +3,7 @@ package com.madeindjs.seo_checker.models;
 import static com.madeindjs.seo_checker.services.BrokenPages.DESCRIPTION_MAX;
 import static com.madeindjs.seo_checker.services.BrokenPages.DESCRIPTION_MIN;
 import static com.madeindjs.seo_checker.services.BrokenPages.TITLE_MAX;
+import java.awt.Color;
 
 public enum BrokenPageError {
 
@@ -22,11 +23,6 @@ public enum BrokenPageError {
     // not found
     UNREACHABLE("Asset was not found", 1);
 
-    private static final String RED = "\033[31;1m";
-    private static final String YELLOW = "\033[33m";
-    private static final String BLUE = "\033[34m";
-    private static final String DEFAULT = "\033[0m";
-
     private final String description;
     private final int priority;
 
@@ -45,14 +41,14 @@ public enum BrokenPageError {
         return description;
     }
 
-    public String toColoredString() {
+    public Color getColor() {
         switch (priority) {
             case 1:
-                return RED + description + DEFAULT;
+                return Color.RED;
             case 2:
-                return YELLOW + description + DEFAULT;
+                return Color.ORANGE;
             default:
-                return BLUE + description + DEFAULT;
+                return Color.blue;
 
         }
     }

@@ -14,7 +14,7 @@ public class Loader extends JPanel implements Observer {
         SeoCrawler.observers.add(this);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         JLabel title = new JLabel("Scanning in progress...");
-
+        title.setHorizontalAlignment(JLabel.CENTER);
         add(title);
     }
 
