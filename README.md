@@ -16,6 +16,7 @@ Currently this check:
     - has optimized title (under 71 chars)
     - has optimized meta description [(between 230 & 320 chars)](https://moz.com/blog/googles-longer-snippets)
 
+At the end of the Crawl, you'll be able to view result or export to _.txt_ or _*.html_.
 
 ## Run
 

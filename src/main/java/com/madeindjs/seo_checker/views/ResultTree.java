@@ -25,7 +25,7 @@ public class ResultTree extends JTree {
             errorPane.showMessageDialog(null, ex.getMessage(), "Error append", JOptionPane.ERROR_MESSAGE);
             return new ResultTree();
         }
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(domain);
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         Vector<BrokenPage> pagesSorted = pages.getBrokenPages();
         Collections.sort(pagesSorted);
 
