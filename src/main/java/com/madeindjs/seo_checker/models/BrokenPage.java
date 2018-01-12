@@ -5,7 +5,7 @@ import java.util.Vector;
 /**
  * A broken page
  */
-public class BrokenPage {
+public class BrokenPage implements Comparable<BrokenPage> {
 
     private final String url;
 
@@ -29,6 +29,11 @@ public class BrokenPage {
 
     public void addError(BrokenPageError error) {
         errors.add(error);
+    }
+
+    @Override
+    public int compareTo(BrokenPage t) {
+        return url.compareTo(t.url);
     }
 
 }
