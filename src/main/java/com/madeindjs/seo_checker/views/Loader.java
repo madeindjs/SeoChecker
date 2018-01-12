@@ -2,22 +2,28 @@ package com.madeindjs.seo_checker.views;
 
 import com.madeindjs.seo_checker.services.Observer;
 import com.madeindjs.seo_checker.services.SeoCrawler;
+import java.awt.Font;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Loader extends JPanel implements Observer {
 
-    private JLabel urlScrwaledLabel = new JLabel("Scanning in progress...");
-
     public Loader() {
         super();
         SeoCrawler.observers.add(this);
-        add(urlScrwaledLabel);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        JLabel title = new JLabel("Scanning in progress...");
+
+        add(title);
     }
 
     @Override
     public void onPageCrawled(String url) {
-        urlScrwaledLabel.setText(url);
+        JLabel urlLabel = new JLabel(url);
+        Font font = new Font(Font.MONOSPACED, Font.PLAIN, 10);
+        urlLabel.setFont(font);
+        add(urlLabel, 1);
         repaint();
     }
 

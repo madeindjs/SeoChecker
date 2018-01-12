@@ -1,25 +1,18 @@
 package com.madeindjs.seo_checker.views;
 
 import com.madeindjs.seo_checker.controllers.SeoCrawlController;
-import com.madeindjs.seo_checker.models.BrokenPage;
-import com.madeindjs.seo_checker.models.BrokenPageError;
 import com.madeindjs.seo_checker.services.BrokenPages;
 import com.madeindjs.seo_checker.services.Observer;
 import com.madeindjs.seo_checker.services.SeoCrawler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 public class Window extends JFrame implements Observer {
 
@@ -32,6 +25,7 @@ public class Window extends JFrame implements Observer {
     private JPanel rootPanel = new JPanel();
 
     private Loader loader = new Loader();
+    private String domain;
 
     public Window() {
         SeoCrawler.observers.add(this);
@@ -53,40 +47,6 @@ public class Window extends JFrame implements Observer {
         this.setJMenuBar(menuBar);
     }
 
-    private void buildTree(String domain) {
-        try {
-            pages = new BrokenPages();
-        } catch (SQLException ex) {
-            JOptionPane errorPane = new JOptionPane();
-            errorPane.showMessageDialog(null, ex.getMessage(), "Error append", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(domain);
-        Vector<BrokenPage> pagesSorted = pages.getBrokenPages();
-        Collections.sort(pagesSorted);
-
-        for (BrokenPage page : pagesSorted) {
-            String href = page.getUrl().replaceFirst(domain, "");
-            DefaultMutableTreeNode nodePage = new DefaultMutableTreeNode(href);
-
-            for (BrokenPageError error : page.getErrors()) {
-                DefaultMutableTreeNode nodeError = new DefaultMutableTreeNode(error.toString());
-                nodePage.add(nodeError);
-            }
-
-            root.add(nodePage);
-        }
-
-        // create tree & set it on the content Pane
-        tree = new JTree(root);
-        //Définition de sa couleur de fond
-        rootPanel.add(new JScrollPane(tree));
-        // refresh view
-        setContentPane(tree);
-        revalidate();
-        repaint();
-    }
-
     @Override
     public void onPageCrawled(String url) {
         validate();
@@ -95,7 +55,11 @@ public class Window extends JFrame implements Observer {
 
     @Override
     public void onCrawlerFinish() {
-        buildTree("azaz");
+        // create tree & set it on the content Pane
+        ResultTree tree = ResultTree.create(domain);
+        setContentPane(tree);
+        revalidate();
+        repaint();
     }
 
     /**
@@ -105,7 +69,7 @@ public class Window extends JFrame implements Observer {
 
         public void actionPerformed(ActionEvent e) {
             JOptionPane inputPane = new JOptionPane();
-            String domain = inputPane.showInputDialog(
+            domain = inputPane.showInputDialog(
                     null,
                     "The scrawler will scrape each page founded on this website.",
                     "Enter an url to scrawl",
