@@ -37,15 +37,14 @@ Now you can run the *jar* file generated with specified domain
 ## Purpose
 
 Respect all of theses [Google Search Engine Optimization guide][google-guide]
-Check all of these SEO rules:
 
-- Website
-    - use sitemap file
-- Pages
-    - Response time
-        - good: under 400 ms
-        - not bad: between 400 ms & 800 ms
-        - bad: upper to 800 ms
+## Todo
+
+- [ ] Check if website use a Sitemap
+- [ ] Check response time _(good = <400ms, correct = 400~800ms, bad = >800 ms)_
+- [ ] Add more specifcation to new crawler (polite time delay, limit deepth, limit pages, filters, etc..)
+
+All merge request are welcomes!
 
 [crwaler4j]: https://github.com/yasserg/crawler4j
 [google-guide]: http://static.googleusercontent.com/media/www.google.com/fr//webmasters/docs/search-engine-optimization-starter-guide.pdf
