@@ -33,6 +33,8 @@ public class BrokenPages {
         loadDuplicates("h1", BrokenPageError.H1_DUPLICATE);
         loadDuplicates("title", BrokenPageError.TITLE_DUPLICATE);
         loadDuplicates("description", BrokenPageError.DESCRIPTION_DUPLICATE);
+
+        loadAssetsNotFound();
     }
 
     public Vector<BrokenPage> getBrokenPages() {
@@ -100,7 +102,7 @@ public class BrokenPages {
 
     private void loadAssetsNotFound() throws SQLException {
         ResultSet result = Database.getInstance()
-                .prepareStatement("SELECT url FROM assets WHERE status != 200")
+                .prepareStatement("SELECT url FROM errors WHERE status != 200")
                 .executeQuery();
         // insert broken pages
         while (result.next()) {
