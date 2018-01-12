@@ -8,20 +8,20 @@ import java.awt.Color;
 public enum BrokenPageError {
 
     TITLE_TOO_LONG("Title should not exceed " + TITLE_MAX + " chars", 2),
-    DESCRIPTION_TOO_SHORT("Description should not be lower than " + DESCRIPTION_MIN + " chars", 3),
-    DESCRIPTION_TOO_LONG("Description should not exceed " + DESCRIPTION_MAX + " chars", 2),
+    DESCRIPTION_TOO_SHORT("Meta tag \"Description\" should not be lower than " + DESCRIPTION_MIN + " chars", 3),
+    DESCRIPTION_TOO_LONG("Meta tag \"Description\" should not exceed " + DESCRIPTION_MAX + " chars", 2),
     // empty
-    TITLE_EMPTY("<title> tag not found", 1),
-    H1_EMPTY("<h1> tag not found", 1),
-    DESCRIPTION_EMPTY("<meta name=\"description\"> tag not found", 1),
-    KEYWORDS_EMPTY("<meta name=\"keywords\"> tag not found", 2),
-    IMG_ALT_EMPTY("'alt' attribute is missing for <img> tag"),
+    TITLE_EMPTY("\"Title\" tag not found", 1),
+    H1_EMPTY("\"h1\" tag not found", 1),
+    DESCRIPTION_EMPTY("Meta tag \"Description\" not found", 1),
+    KEYWORDS_EMPTY("Meta tag \"Keywords\" not found", 2),
+    IMG_ALT_EMPTY("\"alt\" attribute is missing for an \"img\" tag", 1),
     // duplicates
-    TITLE_DUPLICATE("<title> is duplicate on another page", 1),
-    H1_DUPLICATE("<h1> is duplicate on another page", 1),
-    DESCRIPTION_DUPLICATE("<meta name=\"description\"> is duplicate on another page", 1),
+    TITLE_DUPLICATE("\"Title\" is duplicate on another page", 1),
+    H1_DUPLICATE("\"h1\" is duplicate on another page", 1),
+    DESCRIPTION_DUPLICATE("Meta tag \"Description\" is duplicate on another page", 1),
     // not found
-    UNREACHABLE("Asset was not found", 1);
+    UNREACHABLE("Page is unreachable", 1);
 
     private final String description;
     private final int priority;
@@ -39,6 +39,10 @@ public enum BrokenPageError {
     @Override
     public String toString() {
         return description;
+    }
+
+    public int getPriority() {
+        return priority;
     }
 
     public Color getColor() {

@@ -1,6 +1,8 @@
 package com.madeindjs.seo_checker.views;
 
 import com.madeindjs.seo_checker.controllers.SeoCrawlController;
+import com.madeindjs.seo_checker.exports.Export;
+import com.madeindjs.seo_checker.exports.ExportHtml;
 import com.madeindjs.seo_checker.exports.ExportText;
 import com.madeindjs.seo_checker.services.BrokenPages;
 import com.madeindjs.seo_checker.services.Observer;
@@ -111,13 +113,20 @@ public class Window extends JFrame implements Observer {
         @Override
         public void actionPerformed(ActionEvent ae) {
             fileExporter.setSelectedFile(new File("export.txt"));
-            fileExporter.setFileFilter(new FileNameExtensionFilter("Text *.txt", ".txt"));
+            fileExporter.setFileFilter(new FileNameExtensionFilter("Text *.txt", "txt"));
+            fileExporter.setFileFilter(new FileNameExtensionFilter("HTML *.html", "html"));
 
             if (fileExporter.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                 File file = fileExporter.getSelectedFile();
 
                 try {
-                    ExportText export = new ExportText(new BrokenPages());
+                    Export export;
+
+                    if (file.getAbsolutePath().endsWith("html")) {
+                        export = new ExportHtml(new BrokenPages());
+                    } else {
+                        export = new ExportText(new BrokenPages());
+                    }
 
                     if (export.export(file)) {
                         JOptionPane.showMessageDialog(null,
