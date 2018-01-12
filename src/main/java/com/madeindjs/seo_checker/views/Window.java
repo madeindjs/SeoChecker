@@ -42,15 +42,21 @@ public class Window extends JFrame implements Observer {
         super();
         SeoCrawler.observers.add(this);
 
+        buildMenuBar();
+
+        if (BrokenPages.count() > 0) {
+            ResultTree tree = ResultTree.create("");
+            setContentPane(new JScrollPane(tree));
+        } else {
+            buildHome();
+            this.setContentPane(rootPanel);
+        }
+
         this.setSize(500, 300);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("Seo Checker");
-        buildMenuBar();
-        buildHome();
-        this.setContentPane(rootPanel);
         this.setVisible(true);
-
     }
 
     public void buildHome() {

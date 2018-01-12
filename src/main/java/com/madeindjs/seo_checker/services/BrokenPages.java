@@ -42,6 +42,17 @@ public class BrokenPages {
     }
 
     /**
+     * @return Number of broken page
+     */
+    public static int count() {
+        try {
+            return (new BrokenPages()).getBrokenPages().size();
+        } catch (SQLException ex) {
+            return 0;
+        }
+    }
+
+    /**
      * Description have to be between 230 & 320 char
      *
      * @see https://moz.com/blog/googles-longer-snippets
