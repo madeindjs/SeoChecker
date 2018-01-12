@@ -2,9 +2,12 @@
 
 Crawl your website using [Crawler4j][crwaler4j] & check somes SEO rules. 
 
+![Screenshot](https://raw.githubusercontent.com/madeindjs/SeoChecker/master/screenshot.png)
+
 Currently this check:
 
 - Pages
+    - are reachable
     - has **unique**
         - title
         - meta descriptionoptimized meta description
@@ -28,18 +31,7 @@ Compile using [Maven](http://maven.apache.org/) .
 Now you can run the *jar* file generated with specified domain
 
     $ cd target
-    $ java -jar SeoChecker-1.0-SNAPSHOT-jar-with-dependencies.jar http://rousseau-alexandre.fr
-
-And the result would be
-
-    http://rousseau-alexandre.fr/portfolio
-            - Description should not be lower than 230 chars
-            - <h1> tag not found
-            - <meta name="keywords"> tag not found
-
-    http://rousseau-alexandre.fr/tutorial/2017/11/28/rust.html
-            - Description should not be lower than 230 chars
-            - <meta name="keywords"> tag not found
+    $ java -jar SeoChecker-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 ## Purpose
 
@@ -49,8 +41,6 @@ Check all of these SEO rules:
 - Website
     - use sitemap file
 - Pages
-    - are reachable
-    
     - Response time
         - good: under 400 ms
         - not bad: between 400 ms & 800 ms
