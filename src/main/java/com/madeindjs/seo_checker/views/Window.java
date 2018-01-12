@@ -1,44 +1,63 @@
 package com.madeindjs.seo_checker.views;
 
+import com.madeindjs.seo_checker.controllers.SeoCrawlController;
 import com.madeindjs.seo_checker.models.BrokenPage;
 import com.madeindjs.seo_checker.models.BrokenPageError;
 import com.madeindjs.seo_checker.services.BrokenPages;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class Window extends JFrame {
 
+    private JMenuBar menuBar = new JMenuBar();
+    private JMenu fileMenu = new JMenu("File");
+    private JMenuItem newMenuItem = new JMenuItem("New scrawl");
+
     private JTree tree;
-    private String domain;
     private BrokenPages pages;
+    private JPanel rootPanel = new JPanel();
 
-    public Window(String _domain) {
-        domain = _domain;
+    public Window() {
 
-        try {
-            pages = new BrokenPages();
-        } catch (SQLException ex) {
-            System.exit(1);
-            Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
-        }
         this.setSize(300, 300);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setTitle(domain);
-        //On invoque la méthode de construction de notre arbre
-        buildTree();
+        this.setTitle("Seo Crawler");
+        buildMenuBar();
+        rootPanel.setBackground(Color.red);
+        this.setContentPane(rootPanel);
         this.setVisible(true);
-
     }
 
-    private void buildTree() {
+    private void buildMenuBar() {
+        newMenuItem.addActionListener(new NewMenuItemListener());
+
+        fileMenu.add(newMenuItem);
+        menuBar.add(fileMenu);
+        this.setJMenuBar(menuBar);
+    }
+
+    private void buildTree(String domain) {
+        try {
+            pages = new BrokenPages();
+        } catch (SQLException ex) {
+            JOptionPane errorPane = new JOptionPane();
+            errorPane.showMessageDialog(null, ex.getMessage(), "Error append", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(domain);
         Vector<BrokenPage> pagesSorted = pages.getBrokenPages();
         Collections.sort(pagesSorted);
@@ -57,7 +76,40 @@ public class Window extends JFrame {
 
         // create tree & set it on the content Pane
         tree = new JTree(root);
-        this.getContentPane().add(new JScrollPane(tree));
+        //Définition de sa couleur de fond
+        rootPanel.add(new JScrollPane(tree));
+        // refresh view
+        setContentPane(tree);
+        revalidate();
+        repaint();
+    }
+
+    /**
+     *
+     */
+    class NewMenuItemListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            JOptionPane inputPane = new JOptionPane();
+            String domain = inputPane.showInputDialog(
+                    null,
+                    "The scrawler will scrape each page founded on this website.",
+                    "Enter an url to scrawl",
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            try {
+                SeoCrawlController crawler;
+                crawler = SeoCrawlController.create(domain);
+                crawler.start();
+            } catch (Exception ex) {
+                JOptionPane errorPane = new JOptionPane();
+                errorPane.showMessageDialog(null, ex.getMessage(), "Error append", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            buildTree(domain);
+        }
+
     }
 
 }
