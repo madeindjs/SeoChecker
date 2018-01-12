@@ -1,13 +1,18 @@
 package com.madeindjs.seo_checker.views;
 
 import com.madeindjs.seo_checker.controllers.SeoCrawlController;
+import com.madeindjs.seo_checker.exports.ExportText;
+import com.madeindjs.seo_checker.services.BrokenPages;
 import com.madeindjs.seo_checker.services.Observer;
 import com.madeindjs.seo_checker.services.SeoCrawler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.SQLException;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -23,9 +28,12 @@ public class Window extends JFrame implements Observer {
     private final JMenu helpMenu = new JMenu("Help");
     private final JMenuBar menuBar = new JMenuBar();
     private final JMenu fileMenu = new JMenu("File");
+    private final JMenuItem exportMenuItem = new JMenuItem("Export");
     private final JMenuItem newMenuItem = new JMenuItem("New scrawl");
 
     private final JPanel rootPanel = new JPanel();
+
+    protected final JFileChooser fileExporter = new JFileChooser();
 
     private String domain;
 
@@ -36,7 +44,7 @@ public class Window extends JFrame implements Observer {
         this.setSize(500, 300);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setTitle("Seo Crawler");
+        this.setTitle("Seo Checker");
         buildMenuBar();
         buildHome();
         this.setContentPane(rootPanel);
@@ -61,8 +69,10 @@ public class Window extends JFrame implements Observer {
     private void buildMenuBar() {
         newMenuItem.addActionListener(new NewMenuItemListener());
         aboutMenuItem.addActionListener(new AboutMenuItemListener());
+        exportMenuItem.addActionListener(new ExportMenuItemListener());
 
         fileMenu.add(newMenuItem);
+        fileMenu.add(exportMenuItem);
         menuBar.add(fileMenu);
 
         helpMenu.add(aboutMenuItem);
@@ -86,11 +96,50 @@ public class Window extends JFrame implements Observer {
         repaint();
     }
 
+    class ExportMenuItemListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            if (fileExporter.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                File file = fileExporter.getSelectedFile();
+                // try to save the file
+
+                try {
+                    ExportText export = new ExportText(new BrokenPages());
+
+                    if (export.export(file)) {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Your file was exported correctly.",
+                                "Success", JOptionPane.INFORMATION_MESSAGE
+                        );
+                    } else {
+                        // else we display a warning
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Your file can't be export. Check that filename not contains any special character or opened in another application",
+                                "Error", JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "can't load error pages",
+                            "Error", JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+
+        }
+    }
+
     /**
      * Allow user to run a new
      */
     class NewMenuItemListener implements ActionListener {
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             JOptionPane inputPane = new JOptionPane();
             domain = inputPane.showInputDialog(
