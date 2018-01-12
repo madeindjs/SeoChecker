@@ -42,6 +42,10 @@ public enum BrokenPageError {
 
     @Override
     public String toString() {
+        return description;
+    }
+
+    public String toColoredString() {
         switch (priority) {
             case 1:
                 return RED + description + DEFAULT;
