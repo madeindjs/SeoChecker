@@ -4,7 +4,8 @@ import com.madeindjs.seo_checker.controllers.SeoCrawlController;
 import com.madeindjs.seo_checker.models.BrokenPage;
 import com.madeindjs.seo_checker.models.BrokenPageError;
 import com.madeindjs.seo_checker.services.BrokenPages;
-import java.awt.Color;
+import com.madeindjs.seo_checker.services.Observer;
+import com.madeindjs.seo_checker.services.SeoCrawler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -20,7 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class Window extends JFrame {
+public class Window extends JFrame implements Observer {
 
     private JMenuBar menuBar = new JMenuBar();
     private JMenu fileMenu = new JMenu("File");
@@ -30,14 +31,16 @@ public class Window extends JFrame {
     private BrokenPages pages;
     private JPanel rootPanel = new JPanel();
 
-    public Window() {
+    private Loader loader = new Loader();
 
-        this.setSize(300, 300);
+    public Window() {
+        SeoCrawler.observers.add(this);
+
+        this.setSize(500, 300);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("Seo Crawler");
         buildMenuBar();
-        rootPanel.setBackground(Color.red);
         this.setContentPane(rootPanel);
         this.setVisible(true);
     }
@@ -84,8 +87,19 @@ public class Window extends JFrame {
         repaint();
     }
 
+    @Override
+    public void onPageCrawled(String url) {
+        validate();
+        repaint();
+    }
+
+    @Override
+    public void onCrawlerFinish() {
+        buildTree("azaz");
+    }
+
     /**
-     *
+     * Allow user to run
      */
     class NewMenuItemListener implements ActionListener {
 
@@ -101,13 +115,16 @@ public class Window extends JFrame {
             try {
                 SeoCrawlController crawler;
                 crawler = SeoCrawlController.create(domain);
-                crawler.start();
+                crawler.startNonBlocking();
             } catch (Exception ex) {
                 JOptionPane errorPane = new JOptionPane();
                 errorPane.showMessageDialog(null, ex.getMessage(), "Error append", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            buildTree(domain);
+
+            setContentPane(loader);
+            validate();
+            repaint();
         }
 
     }

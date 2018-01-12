@@ -55,6 +55,15 @@ public class SeoCrawlController extends CrawlController {
         start(SeoCrawler.class, NUMBER_OF_THREAD);
     }
 
+    public void startNonBlocking() {
+        try {
+            Database.getInstance().reset();
+        } catch (SQLException ex) {
+            Logger.getLogger(SeoCrawlController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        startNonBlocking(SeoCrawler.class, NUMBER_OF_THREAD);
+    }
+
     public void addSeed(String url) {
         super.addSeed(url);
         SeoCrawler.startUrl = url;

@@ -8,6 +8,7 @@ import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.url.WebURL;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -45,6 +46,8 @@ public class SeoCrawler extends WebCrawler {
 
     public static String startUrl = "";
 
+    public static Vector<Observer> observers = new Vector();
+
     @Override
     public boolean shouldVisit(Page referringPage, WebURL url) {
         String href = url.getURL().toLowerCase();
@@ -56,16 +59,31 @@ public class SeoCrawler extends WebCrawler {
     @Override
     public void visit(Page page) {
         insertInDatabase(page);
+        notifyObservers(page.getWebURL().getURL());
     }
 
     @Override
     protected void onUnexpectedStatusCode(String urlStr, int statusCode, String contentType, String description) {
         super.onUnexpectedStatusCode(urlStr, statusCode, contentType, description);
+        notifyObservers(urlStr);
         ScrapedError asset = new ScrapedError(urlStr, statusCode);
         try {
             asset.save();
         } catch (SQLException ex) {
             Logger.getLogger(SeoCrawler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void onBeforeExit() {
+        for (Observer observer : observers) {
+            observer.onCrawlerFinish();
+        }
+    }
+
+    private void notifyObservers(String url) {
+        for (Observer observer : observers) {
+            observer.onPageCrawled(url);
         }
     }
 
