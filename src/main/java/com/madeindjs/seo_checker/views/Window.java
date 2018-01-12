@@ -21,6 +21,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Window extends JFrame implements Observer {
 
@@ -96,41 +97,42 @@ public class Window extends JFrame implements Observer {
         repaint();
     }
 
+    /**
+     * Open a file chooser menu to export a file
+     */
     class ExportMenuItemListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
+            fileExporter.setSelectedFile(new File("export.txt"));
+            fileExporter.setFileFilter(new FileNameExtensionFilter("Text *.txt", ".txt"));
+
             if (fileExporter.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                 File file = fileExporter.getSelectedFile();
-                // try to save the file
 
                 try {
                     ExportText export = new ExportText(new BrokenPages());
 
                     if (export.export(file)) {
-                        JOptionPane.showMessageDialog(
-                                null,
+                        JOptionPane.showMessageDialog(null,
                                 "Your file was exported correctly.",
                                 "Success", JOptionPane.INFORMATION_MESSAGE
                         );
                     } else {
                         // else we display a warning
-                        JOptionPane.showMessageDialog(
-                                null,
+                        JOptionPane.showMessageDialog(null,
                                 "Your file can't be export. Check that filename not contains any special character or opened in another application",
                                 "Error", JOptionPane.ERROR_MESSAGE
                         );
                     }
 
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(
-                            null,
+                    JOptionPane.showMessageDialog(null,
                             "can't load error pages",
                             "Error", JOptionPane.ERROR_MESSAGE
                     );
                 }
             }
-
         }
     }
 
