@@ -3,6 +3,7 @@ package com.madeindjs.seo_checker.views;
 import com.madeindjs.seo_checker.models.BrokenPage;
 import com.madeindjs.seo_checker.models.BrokenPageError;
 import com.madeindjs.seo_checker.services.BrokenPages;
+import com.madeindjs.seo_checker.services.BrokenPagesFilter;
 import java.awt.Component;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -16,10 +17,16 @@ import javax.swing.tree.TreeNode;
 
 public class ResultTree extends JTree {
 
-    public static ResultTree create(String domain) {
+    private BrokenPagesFilter filter;
+
+    public static ResultTree create() {
+        return create(null);
+    }
+
+    public static ResultTree create(BrokenPagesFilter filter) {
         BrokenPages pages;
         try {
-            pages = new BrokenPages();
+            pages = new BrokenPages(filter);
         } catch (SQLException ex) {
             JOptionPane errorPane = new JOptionPane();
             errorPane.showMessageDialog(null, ex.getMessage(), "Error append", JOptionPane.ERROR_MESSAGE);
@@ -30,8 +37,7 @@ public class ResultTree extends JTree {
         Collections.sort(pagesSorted);
 
         for (BrokenPage page : pagesSorted) {
-            String href = page.getUrl().replaceFirst(domain, "");
-            DefaultMutableTreeNode nodePage = new DefaultMutableTreeNode(href);
+            DefaultMutableTreeNode nodePage = new DefaultMutableTreeNode(page.getUrl());
 
             for (BrokenPageError error : page.getErrors()) {
                 DefaultMutableTreeNode nodeError = new DefaultMutableTreeNode(error);
@@ -42,6 +48,7 @@ public class ResultTree extends JTree {
         }
 
         return new ResultTree(root);
+
     }
 
     private ResultTree(TreeNode root) {
@@ -52,6 +59,10 @@ public class ResultTree extends JTree {
     private ResultTree() {
         super();
         setRenderer();
+    }
+
+    public void setFilter(BrokenPagesFilter filter) {
+        this.filter = filter;
     }
 
     private void setRenderer() {

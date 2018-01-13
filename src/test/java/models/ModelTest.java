@@ -58,7 +58,7 @@ public abstract class ModelTest extends TestCase {
 
     protected int countScrapedAsset() throws SQLException {
         PreparedStatement stmt = Database.getInstance()
-                .prepareStatement("SELECT COUNT(*) FROM assets");
+                .prepareStatement("SELECT COUNT(*) FROM errors");
         ResultSet result = stmt.executeQuery();
 
         return result.getInt(1);

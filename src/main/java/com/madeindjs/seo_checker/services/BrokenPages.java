@@ -17,8 +17,14 @@ public class BrokenPages {
     public static final int TITLE_MAX = 71;
 
     private Vector<BrokenPage> brokenPages = new Vector();
+    private BrokenPagesFilter filter;
 
     public BrokenPages() throws SQLException {
+        this(null);
+    }
+
+    public BrokenPages(BrokenPagesFilter _filter) throws SQLException {
+        filter = _filter;
         loadNotOptimizedTitlesPages();
         loadNotOptimizedDescriptionPages();
 
@@ -34,7 +40,7 @@ public class BrokenPages {
         loadDuplicates("title", BrokenPageError.TITLE_DUPLICATE);
         loadDuplicates("description", BrokenPageError.DESCRIPTION_DUPLICATE);
 
-        loadAssetsNotFound();
+        loadUnreachable();
     }
 
     public Vector<BrokenPage> getBrokenPages() {
@@ -70,9 +76,9 @@ public class BrokenPages {
             if (description != null) {
                 int length = description.length();
                 // check if length is optimized
-                if (length < DESCRIPTION_MIN) {
+                if (hasFilter(BrokenPageError.DESCRIPTION_TOO_SHORT) && length < DESCRIPTION_MIN) {
                     getBrokenPage(url).addError(BrokenPageError.DESCRIPTION_TOO_SHORT);
-                } else if (length > DESCRIPTION_MAX) {
+                } else if (hasFilter(BrokenPageError.DESCRIPTION_TOO_LONG) && length > DESCRIPTION_MAX) {
                     getBrokenPage(url).addError(BrokenPageError.DESCRIPTION_TOO_LONG);
                 }
             }
@@ -80,6 +86,10 @@ public class BrokenPages {
     }
 
     private void loadNotOptimizedTitlesPages() throws SQLException {
+        if (!hasFilter(BrokenPageError.TITLE_TOO_LONG)) {
+            return;
+        }
+
         ResultSet result = Database.getInstance().prepareStatement(
                 "SELECT title, url FROM pages"
         ).executeQuery();
@@ -99,6 +109,10 @@ public class BrokenPages {
     }
 
     private void loadEmpty(String column, BrokenPageError error) throws SQLException {
+        if (!hasFilter(error)) {
+            return;
+        }
+
         String sql = String.format(
                 "SELECT url FROM pages WHERE %1$s IS NULL OR %1$s = ''", column);
         ResultSet result = Database.getInstance()
@@ -111,7 +125,11 @@ public class BrokenPages {
         }
     }
 
-    private void loadAssetsNotFound() throws SQLException {
+    private void loadUnreachable() throws SQLException {
+        if (!hasFilter(BrokenPageError.UNREACHABLE)) {
+            return;
+        }
+
         ResultSet result = Database.getInstance()
                 .prepareStatement("SELECT url FROM errors WHERE status != 200")
                 .executeQuery();
@@ -130,6 +148,10 @@ public class BrokenPages {
      * @throws SQLException
      */
     private void loadDuplicates(String column, BrokenPageError error) throws SQLException {
+        if (!hasFilter(error)) {
+            return;
+        }
+
         String sql = String.format(
                 "SELECT count(*) AS count, %1$s, url "
                 + "FROM pages WHERE %1$s IS NOT NULL "
@@ -147,6 +169,10 @@ public class BrokenPages {
     }
 
     private void loadImgAltMissing() throws SQLException {
+        if (!hasFilter(BrokenPageError.IMG_ALT_EMPTY)) {
+            return;
+        }
+
         String sql = String.format(
                 "SELECT p.url FROM images_without_alt i INNER JOIN pages p ON i.page_id = p.id");
         ResultSet result = Database.getInstance()
@@ -177,6 +203,19 @@ public class BrokenPages {
         brokenPages.add(page);
 
         return page;
+    }
+
+    /**
+     * Check if filter is set for this error
+     *
+     * @return
+     */
+    private boolean hasFilter(BrokenPageError error) {
+        if (filter == null) {
+            return true;
+        } else {
+            return filter.hasError(error);
+        }
     }
 
 }

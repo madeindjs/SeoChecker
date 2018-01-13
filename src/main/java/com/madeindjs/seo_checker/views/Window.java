@@ -4,7 +4,9 @@ import com.madeindjs.seo_checker.controllers.SeoCrawlController;
 import com.madeindjs.seo_checker.exports.Export;
 import com.madeindjs.seo_checker.exports.ExportHtml;
 import com.madeindjs.seo_checker.exports.ExportText;
+import com.madeindjs.seo_checker.models.BrokenPageError;
 import com.madeindjs.seo_checker.services.BrokenPages;
+import com.madeindjs.seo_checker.services.BrokenPagesFilter;
 import com.madeindjs.seo_checker.services.Observer;
 import com.madeindjs.seo_checker.services.SeoCrawler;
 import java.awt.event.ActionEvent;
@@ -14,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,12 +30,16 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Window extends JFrame implements Observer {
 
-    private final JMenuItem aboutMenuItem = new JMenuItem("About");
-    private final JMenu helpMenu = new JMenu("Help");
     private final JMenuBar menuBar = new JMenuBar();
     private final JMenu fileMenu = new JMenu("File");
-    private final JMenuItem exportMenuItem = new JMenuItem("Export");
     private final JMenuItem newMenuItem = new JMenuItem("New scrawl");
+
+    private final JMenu filterMenu = new JMenu("Filter");
+    private final JCheckBoxMenuItem filterDescriptionTooShortMenuItem = new JCheckBoxMenuItem("DESCRIPTION_TOO_SHORT", true);
+
+    private final JMenu helpMenu = new JMenu("Help");
+    private final JMenuItem aboutMenuItem = new JMenuItem("About");
+    private final JMenuItem exportMenuItem = new JMenuItem("Export");
 
     private final JPanel rootPanel = new JPanel();
 
@@ -47,7 +54,7 @@ public class Window extends JFrame implements Observer {
         buildMenuBar();
 
         if (BrokenPages.count() > 0) {
-            ResultTree tree = ResultTree.create("");
+            ResultTree tree = ResultTree.create();
             setContentPane(new JScrollPane(tree));
         } else {
             buildHome();
@@ -79,10 +86,14 @@ public class Window extends JFrame implements Observer {
         newMenuItem.addActionListener(new NewMenuItemListener());
         aboutMenuItem.addActionListener(new AboutMenuItemListener());
         exportMenuItem.addActionListener(new ExportMenuItemListener());
+        filterDescriptionTooShortMenuItem.addActionListener(new FilterMenuItemListener());
 
         fileMenu.add(newMenuItem);
         fileMenu.add(exportMenuItem);
         menuBar.add(fileMenu);
+
+        filterMenu.add(filterDescriptionTooShortMenuItem);
+        menuBar.add(filterMenu);
 
         helpMenu.add(aboutMenuItem);
         menuBar.add(helpMenu);
@@ -98,8 +109,18 @@ public class Window extends JFrame implements Observer {
 
     @Override
     public void onCrawlerFinish() {
-        // create tree & set it on the content Pane
-        ResultTree tree = ResultTree.create(domain);
+        repaintTree();
+    }
+
+    /**
+     * create tree & set it on the content Pane
+     */
+    private void repaintTree() {
+        repaintTree(null);
+    }
+
+    private void repaintTree(BrokenPagesFilter filter) {
+        ResultTree tree = ResultTree.create(filter);
         setContentPane(new JScrollPane(tree));
         revalidate();
         repaint();
@@ -196,6 +217,24 @@ public class Window extends JFrame implements Observer {
         @Override
         public void actionPerformed(ActionEvent e) {
             new About();
+        }
+
+    }
+
+    /**
+     * Called for each filter. Reload ResultTree
+     */
+    class FilterMenuItemListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            BrokenPagesFilter filter = new BrokenPagesFilter();
+
+            if (filterDescriptionTooShortMenuItem.getState()) {
+                filter.add(BrokenPageError.DESCRIPTION_TOO_SHORT);
+            }
+
+            repaintTree(filter);
         }
 
     }
