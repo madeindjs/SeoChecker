@@ -35,7 +35,20 @@ public class Window extends JFrame implements Observer {
     private final JMenuItem newMenuItem = new JMenuItem("New scrawl");
 
     private final JMenu filterMenu = new JMenu("Filter");
-    private final JCheckBoxMenuItem filterDescriptionTooShortMenuItem = new JCheckBoxMenuItem("DESCRIPTION_TOO_SHORT", true);
+    private final JCheckBoxMenuItem filterTitleTooLongMenuItem = BrokenPageError.TITLE_TOO_LONG.toCheckBox();
+    private final JCheckBoxMenuItem filterDescriptionTooShortMenuItem = BrokenPageError.DESCRIPTION_TOO_SHORT.toCheckBox();
+    private final JCheckBoxMenuItem filterDescriptionTooLongMenuItem = BrokenPageError.DESCRIPTION_TOO_LONG.toCheckBox();
+    // empty
+    private final JCheckBoxMenuItem filterTitleEmpty = BrokenPageError.TITLE_EMPTY.toCheckBox();
+    private final JCheckBoxMenuItem filterH1Empty = BrokenPageError.H1_EMPTY.toCheckBox();
+    private final JCheckBoxMenuItem filterDescriptionEmpty = BrokenPageError.DESCRIPTION_EMPTY.toCheckBox();
+    private final JCheckBoxMenuItem filterKeywordsEmpty = BrokenPageError.KEYWORDS_EMPTY.toCheckBox();
+    private final JCheckBoxMenuItem filterImageAltEmptyMenuItem = BrokenPageError.IMG_ALT_EMPTY.toCheckBox();
+    // duplicates
+    private final JCheckBoxMenuItem filterTitleDuplicateMenuItem = BrokenPageError.TITLE_DUPLICATE.toCheckBox();
+    private final JCheckBoxMenuItem filterH1DuplicateMenuItem = BrokenPageError.H1_DUPLICATE.toCheckBox();
+    private final JCheckBoxMenuItem filterDescriptionDuplicateMenuItem = BrokenPageError.DESCRIPTION_DUPLICATE.toCheckBox();
+    private final JCheckBoxMenuItem filterUnreachableMenuItem = BrokenPageError.UNREACHABLE.toCheckBox();
 
     private final JMenu helpMenu = new JMenu("Help");
     private final JMenuItem aboutMenuItem = new JMenuItem("About");
@@ -86,16 +99,41 @@ public class Window extends JFrame implements Observer {
         newMenuItem.addActionListener(new NewMenuItemListener());
         aboutMenuItem.addActionListener(new AboutMenuItemListener());
         exportMenuItem.addActionListener(new ExportMenuItemListener());
+
+        filterTitleTooLongMenuItem.addActionListener(new FilterMenuItemListener());
         filterDescriptionTooShortMenuItem.addActionListener(new FilterMenuItemListener());
+        filterDescriptionTooLongMenuItem.addActionListener(new FilterMenuItemListener());
+        filterTitleEmpty.addActionListener(new FilterMenuItemListener());
+        filterH1Empty.addActionListener(new FilterMenuItemListener());
+        filterDescriptionEmpty.addActionListener(new FilterMenuItemListener());
+        filterKeywordsEmpty.addActionListener(new FilterMenuItemListener());
+        filterImageAltEmptyMenuItem.addActionListener(new FilterMenuItemListener());
+        filterTitleDuplicateMenuItem.addActionListener(new FilterMenuItemListener());
+        filterH1DuplicateMenuItem.addActionListener(new FilterMenuItemListener());
+        filterDescriptionDuplicateMenuItem.addActionListener(new FilterMenuItemListener());
+        filterUnreachableMenuItem.addActionListener(new FilterMenuItemListener());
 
         fileMenu.add(newMenuItem);
         fileMenu.add(exportMenuItem);
         menuBar.add(fileMenu);
 
+        filterMenu.add(filterTitleTooLongMenuItem);
         filterMenu.add(filterDescriptionTooShortMenuItem);
+        filterMenu.add(filterDescriptionTooLongMenuItem);
+        filterMenu.add(filterTitleEmpty);
+        filterMenu.add(filterH1Empty);
+        filterMenu.add(filterDescriptionEmpty);
+        filterMenu.add(filterKeywordsEmpty);
+        filterMenu.add(filterImageAltEmptyMenuItem);
+        filterMenu.add(filterTitleDuplicateMenuItem);
+        filterMenu.add(filterH1DuplicateMenuItem);
+        filterMenu.add(filterDescriptionDuplicateMenuItem);
+        filterMenu.add(filterUnreachableMenuItem);
+
         menuBar.add(filterMenu);
 
         helpMenu.add(aboutMenuItem);
+
         menuBar.add(helpMenu);
 
         this.setJMenuBar(menuBar);
@@ -124,6 +162,7 @@ public class Window extends JFrame implements Observer {
         setContentPane(new JScrollPane(tree));
         revalidate();
         repaint();
+
     }
 
     /**
@@ -232,6 +271,43 @@ public class Window extends JFrame implements Observer {
 
             if (filterDescriptionTooShortMenuItem.getState()) {
                 filter.add(BrokenPageError.DESCRIPTION_TOO_SHORT);
+            }
+
+            if (filterTitleTooLongMenuItem.getState()) {
+                filter.add(BrokenPageError.TITLE_TOO_LONG);
+            }
+            if (filterDescriptionTooShortMenuItem.getState()) {
+                filter.add(BrokenPageError.DESCRIPTION_TOO_SHORT);
+            }
+            if (filterDescriptionTooLongMenuItem.getState()) {
+                filter.add(BrokenPageError.DESCRIPTION_TOO_LONG);
+            }
+            if (filterTitleEmpty.getState()) {
+                filter.add(BrokenPageError.TITLE_EMPTY);
+            }
+            if (filterH1Empty.getState()) {
+                filter.add(BrokenPageError.H1_EMPTY);
+            }
+            if (filterDescriptionEmpty.getState()) {
+                filter.add(BrokenPageError.DESCRIPTION_EMPTY);
+            }
+            if (filterKeywordsEmpty.getState()) {
+                filter.add(BrokenPageError.KEYWORDS_EMPTY);
+            }
+            if (filterImageAltEmptyMenuItem.getState()) {
+                filter.add(BrokenPageError.IMG_ALT_EMPTY);
+            }
+            if (filterTitleDuplicateMenuItem.getState()) {
+                filter.add(BrokenPageError.TITLE_DUPLICATE);
+            }
+            if (filterH1DuplicateMenuItem.getState()) {
+                filter.add(BrokenPageError.H1_DUPLICATE);
+            }
+            if (filterDescriptionDuplicateMenuItem.getState()) {
+                filter.add(BrokenPageError.DESCRIPTION_DUPLICATE);
+            }
+            if (filterUnreachableMenuItem.getState()) {
+                filter.add(BrokenPageError.UNREACHABLE);
             }
 
             repaintTree(filter);

@@ -4,6 +4,7 @@ import static com.madeindjs.seo_checker.services.BrokenPages.DESCRIPTION_MAX;
 import static com.madeindjs.seo_checker.services.BrokenPages.DESCRIPTION_MIN;
 import static com.madeindjs.seo_checker.services.BrokenPages.TITLE_MAX;
 import java.awt.Color;
+import javax.swing.JCheckBoxMenuItem;
 
 public enum BrokenPageError {
 
@@ -55,6 +56,10 @@ public enum BrokenPageError {
                 return Color.blue;
 
         }
+    }
+
+    public JCheckBoxMenuItem toCheckBox() {
+        return new JCheckBoxMenuItem(toString(), true);
     }
 
 }
