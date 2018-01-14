@@ -16,7 +16,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -35,20 +34,20 @@ public class Window extends JFrame implements Observer {
     private final JMenuItem newMenuItem = new JMenuItem("New scrawl");
 
     private final JMenu filterMenu = new JMenu("Filter");
-    private final JCheckBoxMenuItem filterTitleTooLongMenuItem = BrokenPageError.TITLE_TOO_LONG.toCheckBox();
-    private final JCheckBoxMenuItem filterDescriptionTooShortMenuItem = BrokenPageError.DESCRIPTION_TOO_SHORT.toCheckBox();
-    private final JCheckBoxMenuItem filterDescriptionTooLongMenuItem = BrokenPageError.DESCRIPTION_TOO_LONG.toCheckBox();
+    private final FilterCheckBox filterTitleTooLongMenuItem = new FilterCheckBox(BrokenPageError.TITLE_TOO_LONG);
+    private final FilterCheckBox filterDescriptionTooShortMenuItem = new FilterCheckBox(BrokenPageError.DESCRIPTION_TOO_SHORT);
+    private final FilterCheckBox filterDescriptionTooLongMenuItem = new FilterCheckBox(BrokenPageError.DESCRIPTION_TOO_LONG);
     // empty
-    private final JCheckBoxMenuItem filterTitleEmpty = BrokenPageError.TITLE_EMPTY.toCheckBox();
-    private final JCheckBoxMenuItem filterH1Empty = BrokenPageError.H1_EMPTY.toCheckBox();
-    private final JCheckBoxMenuItem filterDescriptionEmpty = BrokenPageError.DESCRIPTION_EMPTY.toCheckBox();
-    private final JCheckBoxMenuItem filterKeywordsEmpty = BrokenPageError.KEYWORDS_EMPTY.toCheckBox();
-    private final JCheckBoxMenuItem filterImageAltEmptyMenuItem = BrokenPageError.IMG_ALT_EMPTY.toCheckBox();
+    private final FilterCheckBox filterTitleEmpty = new FilterCheckBox(BrokenPageError.TITLE_EMPTY);
+    private final FilterCheckBox filterH1Empty = new FilterCheckBox(BrokenPageError.H1_EMPTY);
+    private final FilterCheckBox filterDescriptionEmpty = new FilterCheckBox(BrokenPageError.DESCRIPTION_EMPTY);
+    private final FilterCheckBox filterKeywordsEmpty = new FilterCheckBox(BrokenPageError.KEYWORDS_EMPTY);
+    private final FilterCheckBox filterImageAltEmptyMenuItem = new FilterCheckBox(BrokenPageError.IMG_ALT_EMPTY);
     // duplicates
-    private final JCheckBoxMenuItem filterTitleDuplicateMenuItem = BrokenPageError.TITLE_DUPLICATE.toCheckBox();
-    private final JCheckBoxMenuItem filterH1DuplicateMenuItem = BrokenPageError.H1_DUPLICATE.toCheckBox();
-    private final JCheckBoxMenuItem filterDescriptionDuplicateMenuItem = BrokenPageError.DESCRIPTION_DUPLICATE.toCheckBox();
-    private final JCheckBoxMenuItem filterUnreachableMenuItem = BrokenPageError.UNREACHABLE.toCheckBox();
+    private final FilterCheckBox filterTitleDuplicateMenuItem = new FilterCheckBox(BrokenPageError.TITLE_DUPLICATE);
+    private final FilterCheckBox filterH1DuplicateMenuItem = new FilterCheckBox(BrokenPageError.H1_DUPLICATE);
+    private final FilterCheckBox filterDescriptionDuplicateMenuItem = new FilterCheckBox(BrokenPageError.DESCRIPTION_DUPLICATE);
+    private final FilterCheckBox filterUnreachableMenuItem = new FilterCheckBox(BrokenPageError.UNREACHABLE);
 
     private final JMenu helpMenu = new JMenu("Help");
     private final JMenuItem aboutMenuItem = new JMenuItem("About");
@@ -100,35 +99,14 @@ public class Window extends JFrame implements Observer {
         aboutMenuItem.addActionListener(new AboutMenuItemListener());
         exportMenuItem.addActionListener(new ExportMenuItemListener());
 
-        filterTitleTooLongMenuItem.addActionListener(new FilterMenuItemListener());
-        filterDescriptionTooShortMenuItem.addActionListener(new FilterMenuItemListener());
-        filterDescriptionTooLongMenuItem.addActionListener(new FilterMenuItemListener());
-        filterTitleEmpty.addActionListener(new FilterMenuItemListener());
-        filterH1Empty.addActionListener(new FilterMenuItemListener());
-        filterDescriptionEmpty.addActionListener(new FilterMenuItemListener());
-        filterKeywordsEmpty.addActionListener(new FilterMenuItemListener());
-        filterImageAltEmptyMenuItem.addActionListener(new FilterMenuItemListener());
-        filterTitleDuplicateMenuItem.addActionListener(new FilterMenuItemListener());
-        filterH1DuplicateMenuItem.addActionListener(new FilterMenuItemListener());
-        filterDescriptionDuplicateMenuItem.addActionListener(new FilterMenuItemListener());
-        filterUnreachableMenuItem.addActionListener(new FilterMenuItemListener());
+        for (FilterCheckBox checkbox : FilterCheckBox.getInstances()) {
+            checkbox.addActionListener(new FilterMenuItemListener());
+            filterMenu.add(checkbox);
+        }
 
         fileMenu.add(newMenuItem);
         fileMenu.add(exportMenuItem);
         menuBar.add(fileMenu);
-
-        filterMenu.add(filterTitleTooLongMenuItem);
-        filterMenu.add(filterDescriptionTooShortMenuItem);
-        filterMenu.add(filterDescriptionTooLongMenuItem);
-        filterMenu.add(filterTitleEmpty);
-        filterMenu.add(filterH1Empty);
-        filterMenu.add(filterDescriptionEmpty);
-        filterMenu.add(filterKeywordsEmpty);
-        filterMenu.add(filterImageAltEmptyMenuItem);
-        filterMenu.add(filterTitleDuplicateMenuItem);
-        filterMenu.add(filterH1DuplicateMenuItem);
-        filterMenu.add(filterDescriptionDuplicateMenuItem);
-        filterMenu.add(filterUnreachableMenuItem);
 
         menuBar.add(filterMenu);
 
@@ -267,49 +245,7 @@ public class Window extends JFrame implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            BrokenPagesFilter filter = new BrokenPagesFilter();
-
-            if (filterDescriptionTooShortMenuItem.getState()) {
-                filter.add(BrokenPageError.DESCRIPTION_TOO_SHORT);
-            }
-
-            if (filterTitleTooLongMenuItem.getState()) {
-                filter.add(BrokenPageError.TITLE_TOO_LONG);
-            }
-            if (filterDescriptionTooShortMenuItem.getState()) {
-                filter.add(BrokenPageError.DESCRIPTION_TOO_SHORT);
-            }
-            if (filterDescriptionTooLongMenuItem.getState()) {
-                filter.add(BrokenPageError.DESCRIPTION_TOO_LONG);
-            }
-            if (filterTitleEmpty.getState()) {
-                filter.add(BrokenPageError.TITLE_EMPTY);
-            }
-            if (filterH1Empty.getState()) {
-                filter.add(BrokenPageError.H1_EMPTY);
-            }
-            if (filterDescriptionEmpty.getState()) {
-                filter.add(BrokenPageError.DESCRIPTION_EMPTY);
-            }
-            if (filterKeywordsEmpty.getState()) {
-                filter.add(BrokenPageError.KEYWORDS_EMPTY);
-            }
-            if (filterImageAltEmptyMenuItem.getState()) {
-                filter.add(BrokenPageError.IMG_ALT_EMPTY);
-            }
-            if (filterTitleDuplicateMenuItem.getState()) {
-                filter.add(BrokenPageError.TITLE_DUPLICATE);
-            }
-            if (filterH1DuplicateMenuItem.getState()) {
-                filter.add(BrokenPageError.H1_DUPLICATE);
-            }
-            if (filterDescriptionDuplicateMenuItem.getState()) {
-                filter.add(BrokenPageError.DESCRIPTION_DUPLICATE);
-            }
-            if (filterUnreachableMenuItem.getState()) {
-                filter.add(BrokenPageError.UNREACHABLE);
-            }
-
+            BrokenPagesFilter filter = FilterCheckBox.getBrokenPagesFilter();
             repaintTree(filter);
         }
 
