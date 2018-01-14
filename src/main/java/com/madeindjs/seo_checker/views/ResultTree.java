@@ -37,7 +37,7 @@ public class ResultTree extends JTree {
         Collections.sort(pagesSorted);
 
         for (BrokenPage page : pagesSorted) {
-            DefaultMutableTreeNode nodePage = new DefaultMutableTreeNode(page.getUrl());
+            DefaultMutableTreeNode nodePage = new DefaultMutableTreeNode(page);
 
             for (BrokenPageError error : page.getErrors()) {
                 DefaultMutableTreeNode nodeError = new DefaultMutableTreeNode(error);
@@ -77,6 +77,11 @@ public class ResultTree extends JTree {
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
             super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
             DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) value;
+
+            if (treeNode.getUserObject() instanceof BrokenPage) {
+                BrokenPage page = (BrokenPage) treeNode.getUserObject();
+                setForeground(page.getColor());
+            }
 
             if (treeNode.getUserObject() instanceof BrokenPageError) {
                 BrokenPageError error = (BrokenPageError) treeNode.getUserObject();

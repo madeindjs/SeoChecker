@@ -1,5 +1,6 @@
 package com.madeindjs.seo_checker.models;
 
+import java.awt.Color;
 import java.util.Vector;
 
 /**
@@ -34,6 +35,23 @@ public class BrokenPage implements Comparable<BrokenPage> {
     @Override
     public int compareTo(BrokenPage t) {
         return url.compareTo(t.url);
+    }
+
+    @Override
+    public String toString() {
+        return url;
+    }
+
+    public Color getColor() {
+        BrokenPageError error = errors.firstElement();
+
+        for (BrokenPageError error1 : errors) {
+            if (error.getPriority() > error1.getPriority()) {
+                error = error1;
+            }
+        }
+
+        return error.getColor();
     }
 
 }

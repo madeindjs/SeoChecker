@@ -6,7 +6,7 @@ import static com.madeindjs.seo_checker.services.BrokenPages.TITLE_MAX;
 import java.awt.Color;
 import javax.swing.JCheckBoxMenuItem;
 
-public enum BrokenPageError {
+public enum BrokenPageError implements Comparable<BrokenPageError> {
 
     TITLE_TOO_LONG("Title should not exceed " + TITLE_MAX + " chars", 2),
     DESCRIPTION_TOO_SHORT("Meta tag \"Description\" should not be lower than " + DESCRIPTION_MIN + " chars", 3),
@@ -53,7 +53,7 @@ public enum BrokenPageError {
             case 2:
                 return Color.ORANGE;
             default:
-                return Color.blue;
+                return Color.YELLOW;
 
         }
     }
