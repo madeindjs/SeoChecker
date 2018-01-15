@@ -49,11 +49,11 @@ public enum BrokenPageError implements Comparable<BrokenPageError> {
     public Color getColor() {
         switch (priority) {
             case 1:
-                return Color.RED;
+                return new Color(150, 40, 27);
             case 2:
-                return Color.ORANGE;
+                return new Color(44, 62, 80);
             default:
-                return Color.YELLOW;
+                return new Color(108, 122, 137);
 
         }
     }
