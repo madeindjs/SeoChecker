@@ -50,10 +50,10 @@ All merge request are welcomes!
 
 - Toutes vos images doivent être compressées au maximum. Fini les images en 3000*2000px (1000px est largement suffisant, la qualité est tout aussi bonne). Un outil pour compresser vos images.
 - Toutes les images de la pages doivent être nommées avec les mots clés de la page. De plus, la balise “alt” de l’image, doit aussi contenir les mots clés
-- Le titre de votre page (<h1>) doit contenir votre mot clé
-- Le <title> de votre page doit contenir le mot clé. Sous wordpress, c’est fait automatiquement avec votre titre.
-- Le <title> doit contenir au maximum 65 caractères
-- Les sous titres <h2> <h3> etc. doivent aussi contenir des mots clés, des synonymes ou des termes proches.
+- Le titre de votre page (`<h1>`) doit contenir votre mot clé
+- Le `<title>` de votre page doit contenir le mot clé. Sous wordpress, c’est fait automatiquement avec votre titre.
+- Le `<title>` doit contenir au maximum 65 caractères
+- Les sous titres `<h2>` `<h3>` etc. doivent aussi contenir des mots clés, des synonymes ou des termes proches.
 - Votre meta description contient votre mot clé.
 - Votre mot clé apparait dans l’url. 
 - Pour reprendre les exemples monblog.com/sac-main-annees-80 ou monsite.fr/blog/etats-lieux-voiture
